@@ -8,17 +8,7 @@
 #include <stdio.h>
 #include "main.h"
 
-int clientfd;
-
-void getMaxProfit(char* stock){
-    write(clientfd, stock, strlen(stock));
-    read(clientfd, stock , MAXLINE);
-    fputs(stock, stdout);
-}
-
-void getPrice(char* stock_date){
-    
-}
+int clientfd = 0;
 
 int main(int argc, const char * argv[]) {
     // insert code here...
@@ -42,31 +32,31 @@ int main(int argc, const char * argv[]) {
         if(strcmp(input, "quit") == 0){break;}
         buffer = strtok(buf2, spliter);
         if(strcmp(buffer, "MaxProfit") == 0){
-            buffer = strtok(NULL, spliter);
-            char * stock = buffer;
-            getMaxProfit(stock);
+            char original_length = strlen(input);
+            char buf3[MAXLINE];
+            buf3[0] = original_length; // set first byte to size
+            buf3[1] = '\0';
+            strcat(buf3, input);
+            printf("%s\n", buf3);
+            write(clientfd, buf3, strlen(buf3));
+            read(clientfd, input  , MAXLINE);
+            fputs(input, stdout);
             continue;
         }
         if(strcmp(buffer, "Prices") == 0){
             char original_length = strlen(input);
             char buf3[MAXLINE];
             buf3[0] = original_length; // set first byte to size
+            buf3[1] = '\0';
             strcat(buf3, input);
             printf("%s\n", buf3);
             write(clientfd, buf3, strlen(buf3));
             read(clientfd, input  , MAXLINE);
             fputs(input, stdout);
+            continue;
         }
                    
     }
-    /*
-    while(fgets(buf, MAXLINE, stdin) != NULL){
-        write(clientfd, buf, strlen(buf));
-        read(clientfd, buf  , MAXLINE);
-        fputs(buf, stdout);
-        
-    }
-     */
     close(clientfd); //line:netp:echoclient:close
     exit(0);
     return 0;

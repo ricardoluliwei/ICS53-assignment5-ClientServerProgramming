@@ -101,7 +101,12 @@ void sendB(int connfd){
             buffer = strtok(NULL, spliter);
             printf("Printing Prices of %s\n", buffer);
             write(connfd, input , n);
-        }else write(connfd, "Other command", n);
+        }
+        if(strcmp(buffer, "Prices")==0){
+            buffer = strtok(NULL, spliter);
+            printf("Printing MaxProfit of %s\n", buffer);
+            write(connfd, input , n);
+        } else write(connfd, "Other command", n);
         
     }
 }
