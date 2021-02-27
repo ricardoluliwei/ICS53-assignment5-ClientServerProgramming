@@ -33,11 +33,8 @@ struct STOCK{
     float close[DATA_NUM];
 };
 
-struct STOCK APPL;
-struct STOCK TWTR;
-
-struct TWTR twtr_stock;
-struct APPL appl_stock;
+struct STOCK twtr_stock;
+struct STOCK appl_stock;
 
 void read_file(char* file1, char* file2){
     FILE* fd1 = fopen(file1, "r");
@@ -82,19 +79,41 @@ float getPrice(char* stock, char* date){
 
     if(strncmp(stock, APPL_STR, 4) == 0){
         for(i=0; i < DATA_NUM; i++){
-            if(strncmp(APPL.date[i], date, 10) == 0)
-                return APPL.close[i];
+            if(strncmp(appl_stock.date[i], date, 10) == 0)
+                return appl_stock.close[i];
         }
     } else if(strncmp(stock, TWTR_STR, 4) == 0){
         for(i=0; i < DATA_NUM; i++){
-            if(strncmp(TWTR.date[i], date, 10) == 0)
-                return TWTR.close[i]
+            if(strncmp(twtr_stock.date[i], date, 10) == 0)
+                return twtr_stock.close[i];
         }
     }
     return -1;
 }
 
-float maxProfit(char* stock);
+float maxProfit(char* stock){
+    float max_profit[DATA_NUM];
+    float min_close[DATA_NUM];
+    int i;
+    struct STOCK* s;
+    float temp_profit;
+
+    if(strncmp(stock, APPL_STR, 4) == 0){
+        s = &appl_stock;
+    } else if(strncmp(stock, TWTR_STR, 4) == 0){
+        s = &twtr_stock;
+    }
+
+    max_profit[0] = 0;
+    min_close[0] = s->close[0];
+    for(i = 1; i < DATA_NUM; i++){
+        min_close[i] = min_close[i-1] < s->close[i] ? min_close[i-1] : s->close[i];
+        temp_profit = s->close[i] - min_close[i-1];
+        max_profit[i] = temp_profit > max_profit[i-1] ? temp_profit : max_profit[i-1];
+    }
+
+    return max_profit[DATA_NUM - 1];
+}
 
 int open_listenfd(char *port)
 {
