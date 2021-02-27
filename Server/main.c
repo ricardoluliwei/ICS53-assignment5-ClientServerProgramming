@@ -38,10 +38,45 @@ struct TWTR{
     float close[DATA_NUM];
 };
 
+struct TWTR twtr_stock;
+struct APPL appl_stock;
+
 void read_file(char* file1, char* file2){
-    FILE* fd1;
-    FILE* fd2;
+    FILE* fd1 = fopen(file1, "r");
+    FILE* fd2 = fopen(file2, "r");
     char buf[1000];
+    fgets(buf, 100, fd1);
+    int i = 0;
+    while(fgets(buf, 100, fd1)){
+        char *buf2;
+        buf2 = strtok(buf, ",");
+        strcpy(appl_stock.date[i], buf2);
+        buf2 = strtok(NULL, ",");
+        buf2 = strtok(NULL, ",");
+        buf2 = strtok(NULL, ",");
+        buf2 = strtok(NULL, ",");
+        appl_stock.close[i] = atof(buf2);
+        printf("APPL Date: %s, Closing Price: %.2f\n", appl_stock.date[i], appl_stock.close[i]);
+        //printf("%s\n", buf);
+        i++;
+    }
+    fgets(buf, 100, fd2);
+    i = 0;
+    while(fgets(buf, 100, fd2)){
+        char *buf2;
+        buf2 = strtok(buf, ",");
+        strcpy(twtr_stock.date[i], buf2);
+        buf2 = strtok(NULL, ",");
+        buf2 = strtok(NULL, ",");
+        buf2 = strtok(NULL, ",");
+        buf2 = strtok(NULL, ",");
+        twtr_stock.close[i] = atof(buf2);
+        printf("TWTR Date: %s, Closing Price: %.2f\n", twtr_stock.date[i], twtr_stock.close[i]);
+        //printf("%s\n", buf);
+        i++;
+    }
+    
+    
 }
 
 float getPrice(char* stock, char* date){
@@ -50,6 +85,7 @@ float getPrice(char* stock, char* date){
     } else if(strncmp(stock, TWTR_STR, 4) == 0){
 
     }
+    return -1;
 }
 
 float maxProfit(char* stock);
@@ -142,11 +178,12 @@ void sendB(int connfd){
 int main(int argc, const char * argv[]) {
     // insert code here...
     printf("Hello, World!\n");
+    read_file("AAPL.csv", "TWTR.csv");
+    return 0;
     int listenfd, connfd;
     char hostname[MAXLINE], port[MAXLINE];
     socklen_t clientlen;
     struct sockaddr_storage clientaddr;
-
     /* Check command line args */
     if (argc != 2) {
     fprintf(stderr, "usage: %s <port>\n", argv[0]);
