@@ -22,7 +22,25 @@
 #define MAXBUF   8192  /* Max I/O buffer size */
 #define LISTENQ  1024  /* Second argument to listen() */
 
-char buf[MAXBUF];
+struct APPL{
+    char date[502][11];
+    float close[502];
+};
+
+struct TWTR{
+    char date[502][11];
+    float close[502];
+};
+
+void read_file(char* file1, char* file2){
+    FILE* fd1;
+    FILE* fd2;
+    char buf[1000];
+}
+
+float getPrice(char* stock, char* date);
+
+float maxProfit(char* stock);
 
 int open_listenfd(char *port)
 {
@@ -75,10 +93,6 @@ int open_listenfd(char *port)
 void doit(int connfd){
     dup2(connfd, STDOUT_FILENO);
     printf("Hello, World!\n");
-}
-
-int getPrice(){
-
 }
 
 void sendB(int connfd){
