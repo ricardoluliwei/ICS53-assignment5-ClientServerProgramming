@@ -28,15 +28,13 @@
 #define DATA_NUM 503
 #define DATE_LEN 11
 
-struct APPL{
+struct STOCK{
     char date[DATA_NUM][DATE_LEN];
     float close[DATA_NUM];
 };
 
-struct TWTR{
-    char date[DATA_NUM][DATE_LEN];
-    float close[DATA_NUM];
-};
+struct STOCK APPL;
+struct STOCK TWTR;
 
 void read_file(char* file1, char* file2){
     FILE* fd1;
@@ -45,10 +43,18 @@ void read_file(char* file1, char* file2){
 }
 
 float getPrice(char* stock, char* date){
+    int i;
+
     if(strncmp(stock, APPL_STR, 4) == 0){
-
+        for(i=0; i < DATA_NUM; i++){
+            if(strncmp(APPL.date[i], date, 10) == 0)
+                return APPL.close[i];
+        }
     } else if(strncmp(stock, TWTR_STR, 4) == 0){
-
+        for(i=0; i < DATA_NUM; i++){
+            if(strncmp(TWTR.date[i], date, 10) == 0)
+                return TWTR.close[i]
+        }
     }
 }
 
