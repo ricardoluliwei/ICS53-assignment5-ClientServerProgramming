@@ -21,15 +21,21 @@
 #define MAXLINE  8192  /* Max text line length */
 #define MAXBUF   8192  /* Max I/O buffer size */
 #define LISTENQ  1024  /* Second argument to listen() */
+#define APPL_STR "APPL"
+#define TWTR_STR "TWTR"
+#define PRICE_STR "Prices"
+#define MAXPROFIT_STR "MaxProfit"
+#define DATA_NUM 503
+#define DATE_LEN 11
 
 struct APPL{
-    char date[502][11];
-    float close[502];
+    char date[DATA_NUM][DATE_LEN];
+    float close[DATA_NUM];
 };
 
 struct TWTR{
-    char date[502][11];
-    float close[502];
+    char date[DATA_NUM][DATE_LEN];
+    float close[DATA_NUM];
 };
 
 void read_file(char* file1, char* file2){
@@ -38,7 +44,13 @@ void read_file(char* file1, char* file2){
     char buf[1000];
 }
 
-float getPrice(char* stock, char* date);
+float getPrice(char* stock, char* date){
+    if(strncmp(stock, APPL_STR, 4) == 0){
+
+    } else if(strncmp(stock, TWTR_STR, 4) == 0){
+
+    }
+}
 
 float maxProfit(char* stock);
 
