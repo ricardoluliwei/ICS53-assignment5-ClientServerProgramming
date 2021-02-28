@@ -23,6 +23,93 @@
 #define MAXBUF   8192  /* Max I/O buffer size */
 #define LISTENQ  1024  /* Second argument to listen() */
 
+int check_date(char* date){
+    if(strlen(date)!=10) return 0;
+    char fdate[11];
+    strncpy(fdate, date, 10);
+    char* buf;
+    buf = strtok(fdate, "-");
+    if(!buf){return 0;}
+    int year = atoi(buf);
+    printf("%d\n", year);
+    buf = strtok(NULL, "-");
+    if(!buf){return 0;}
+    int month = atoi(buf);
+    printf("%d\n", month);
+    buf = strtok(NULL, "-");
+    if(!buf){return 0;}
+    int day = atoi(buf);
+    printf("%d\n", day);
+    if(year < 2017|| day <1||day>31||month<1||month>12) return 0; //general case
+    switch (year) {
+        case 2017:
+            if(month <7) return 0;
+            switch (month) {
+                case 7:
+                    if(day<2 || day>31) return 0;
+                    break;
+                case 8:
+                case 10:
+                case 12:
+                    if(day >31) return 0;
+                    break;
+                case 9:
+                case 11:
+                    if(day >30) return 0;
+                    break;
+                default:
+                    return 0;
+            }
+            break;
+        case 2018:
+        case 2019:
+            switch (month) {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    if(day >31) return 0;
+                    break;
+                case 2:
+                    if(day >28) return 0;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    if(day >30) return 0;
+                    break;
+                default:
+                    return 0;
+            }
+            break;
+        case 2020:
+            switch (month) {
+                case 1:
+                case 3:
+                case 5:
+                    if(day >31) return 0;
+                    break;
+                case 2:
+                    if(day >29) return 0;
+                    break;
+                case 4:
+                case 6:
+                    if(day >30) return 0;
+                    break;
+                default:
+                    return 0;
+            }
+            break;
+        default:
+            return 0;
+    }
+    return 1;
+}
+
 int open_clientfd(char *hostname, char *port) {
     int clientfd, rc;
     struct addrinfo hints, *listp, *p;
@@ -83,6 +170,11 @@ int main(int argc, const char * argv[]) {
         if(strcmp(input, "quit") == 0){break;}
         buffer = strtok(buf2, spliter);
         if(strcmp(buffer, "MaxProfit") == 0){
+            buffer = strtok(NULL, spliter);
+            if(strcmp(buffer, "APPL") != 0 && strcmp(buffer, "TWTR")!=0){
+                printf("Invalid Syntax!\n");
+                continue;
+            }
             char original_length = strlen(input);
             char buf3[MAXLINE];
             buf3[0] = original_length; // set first byte to size
@@ -95,6 +187,17 @@ int main(int argc, const char * argv[]) {
             continue;
         }
         if(strcmp(buffer, "Prices") == 0){
+            buffer = strtok(NULL, spliter);
+            if(strcmp(buffer, "APPL") != 0 && strcmp(buffer, "TWTR")!=0){
+                printf("Invalid Syntax!\n");
+                continue;
+            }
+            buffer = strtok(NULL, spliter);
+            if(! check_date(buffer)){
+                printf("Invalid Syntax!\n");
+                continue;
+            }
+            
             char original_length = strlen(input);
             char buf3[MAXLINE];
             buf3[0] = original_length; // set first byte to size
@@ -104,9 +207,13 @@ int main(int argc, const char * argv[]) {
             write(clientfd, buf3, strlen(buf3));
             read(clientfd, input  , MAXLINE);
             fputs(input, stdout);
+            
             continue;
         }
-                   
+        else{
+            printf("Invalid Syntax!\n");
+            continue;
+        }
     }
     close(clientfd); //line:netp:echoclient:close
     exit(0);
