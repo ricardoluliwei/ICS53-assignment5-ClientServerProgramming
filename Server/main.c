@@ -23,10 +23,11 @@
 #define LISTENQ  1024  /* Second argument to listen() */
 #define APPL_STR "APPL"
 #define TWTR_STR "TWTR"
-#define PRICE_STR "Prices"
+#define PRICES_STR "Prices"
 #define MAXPROFIT_STR "MaxProfit"
 #define DATA_NUM 503
 #define DATE_LEN 11
+#define UNKNOWN_STR "Unknown"
 
 struct STOCK{
     char date[DATA_NUM][DATE_LEN];
@@ -40,6 +41,17 @@ void read_file(char* file1, char* file2){
     FILE* fd1 = fopen(file1, "r");
     FILE* fd2 = fopen(file2, "r");
     char buf[1000];
+
+    if(fd1 < 0){
+        fprintf(STDERR_FILENO, "Can not open %s", file1);
+        exit(1);
+    }
+
+    if(fd2 < 0){
+        fprintf(STDERR_FILENO, "Can not open %s", file2);
+        exit(1);
+    } 
+
     fgets(buf, 100, fd1);
     int i = 0;
     while(fgets(buf, 100, fd1)){
@@ -88,7 +100,7 @@ float getPrice(char* stock, char* date){
                 return twtr_stock.close[i];
         }
     }
-    return -1;
+    return -1.0;
 }
 
 float maxProfit(char* stock){
@@ -102,6 +114,8 @@ float maxProfit(char* stock){
         s = &appl_stock;
     } else if(strncmp(stock, TWTR_STR, 4) == 0){
         s = &twtr_stock;
+    } else{
+        return -1.0;
     }
 
     max_profit[0] = 0;
@@ -170,59 +184,74 @@ void doit(int connfd){
 
 void sendB(int connfd){
     size_t n;
-    int i=0;
+    int i = 0;
     char input[MAXLINE];
     char in_wo_sz[MAXLINE];
-    FILE* twtr;
-    twtr = fopen("TWTR.csv", "r");
-    //fread(buf, 1, 10, twtr);
-    //printf("%s\n", buf);
+    float result;
+    char* stock; 
+    char* date;
+    char* buffer;
+    char* spliter = " \n";
+
     while((n = read(connfd, input, MAXLINE)) != 0){
-        printf("server received %d bytes\n", (int)n);
+        printf("%s", input);
         
         for(i =1; i< strlen(input); i++){
             in_wo_sz[i-1] = input[i];
         }
-        char* buffer;
-        char* spliter = " \n";
-        buffer = strtok(in_wo_sz, spliter);
-        if(strcmp(buffer, "Prices")==0){
-            buffer = strtok(NULL, spliter);
-            printf("Printing Prices of %s\n", buffer);
-            write(connfd, input , n);
-        }
-        if(strcmp(buffer, "Prices")==0){
-            buffer = strtok(NULL, spliter);
-            printf("Printing MaxProfit of %s\n", buffer);
-            write(connfd, input , n);
-        } else write(connfd, "Other command", n);
         
+        buffer = strtok(in_wo_sz, spliter);
+
+        if(strcmp(buffer, PRICES_STR)==0){
+            stock = strtok(NULL, spliter);
+            date = strtok(NULL, spliter); 
+            result = getPrice(stock, date);
+
+            if(result < 0){
+                fprintf(connfd, "%s", UNKNOWN_STR);
+            } else {
+                fprintf(connfd, "%f", result); 
+            }
+        } else if(strcmp(buffer, MAXPROFIT_STR)==0){
+            stock = strtok(NULL, spliter);
+            result = maxProfit(stock);
+
+            if(result < 0){
+                fprintf(connfd, "%s", UNKNOWN_STR);
+            } else {
+                fprintf(connfd, "Maximum Profit for %s: %f", stock, result); 
+            }
+        }
     }
 }
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    printf("Hello, World!\n");
-    read_file("AAPL.csv", "TWTR.csv");
-    return 0;
+    //argv[0] == server
+    //argv[1] == APPL.csv
+    //argv[2] == TWTR.csv
+    //argv[3] == port number
+    if (argc != 4) {
+        fprintf(stderr, "usage: %s <filename1> <filename2> <port>\n", argv[0]);
+        exit(1);
+    }
+
+    printf("server started\n");
+    read_file(argv[1], argv[2]);
     int listenfd, connfd;
     char hostname[MAXLINE], port[MAXLINE];
     socklen_t clientlen;
     struct sockaddr_storage clientaddr;
     /* Check command line args */
-    if (argc != 2) {
-    fprintf(stderr, "usage: %s <port>\n", argv[0]);
-    exit(1);
-    }
+    
 
-    listenfd = open_listenfd(argv[1]);
+    listenfd = open_listenfd(argv[3]);
     while (1) {
-    clientlen = sizeof(clientaddr);
-    connfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen); //line:netp:tiny:accept
-        getnameinfo((struct sockaddr *) &clientaddr, clientlen, hostname, MAXLINE,
-                    port, MAXLINE, 0);
+        clientlen = sizeof(clientaddr);
+        connfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen); //line:netp:tiny:accept
+        getnameinfo((struct sockaddr *) &clientaddr, clientlen, hostname, MAXLINE, port, MAXLINE, 0);
         printf("Accepted connection from (%s, %s)\n", hostname, port);
-    //doit(connfd);                                             //line:netp:tiny:doit
+        //doit(connfd);                                             //line:netp:tiny:doit
         sendB(connfd);
         close(connfd);                                            //line:netp:tiny:close
     }
