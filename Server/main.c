@@ -194,7 +194,7 @@ void sendB(int connfd){
     char* spliter = " \n";
 
     while((n = read(connfd, input, MAXLINE)) != 0){
-        printf("%s", &input[1]);
+        printf("%s\n", &input[1]);
         
         buffer = strtok(&input[1], spliter);
 
@@ -204,18 +204,18 @@ void sendB(int connfd){
             result = getPrice(stock, date);
 
             if(result < 0){
-                fprintf(connfd, "%s", UNKNOWN_STR);
+                fprintf(connfd, "%s\n", UNKNOWN_STR);
             } else {
-                fprintf(connfd, "%f", result); 
+                fprintf(connfd, "%.2f\n", result); 
             }
         } else if(strcmp(buffer, MAXPROFIT_STR)==0){
             stock = strtok(NULL, spliter);
             result = maxProfit(stock);
 
             if(result < 0){
-                fprintf(connfd, "%s", UNKNOWN_STR);
+                fprintf(connfd, "%s\n", UNKNOWN_STR);
             } else {
-                fprintf(connfd, "Maximum Profit for %s: %f", stock, result); 
+                fprintf(connfd, "Maximum Profit for %s: %.2f\n", stock, result); 
             }
         }
     }
