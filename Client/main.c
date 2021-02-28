@@ -139,6 +139,7 @@ int main(int argc, const char * argv[]) {
             strcat(buf3, input);
             //printf("%s\n", buf3);
             write(clientfd, buf3, strlen(buf3));
+            memset(input, 0, sizeof(input));
             read(clientfd, input  , MAXLINE);
             fputs(input, stdout);
             continue;
@@ -162,6 +163,7 @@ int main(int argc, const char * argv[]) {
             strcat(buf3, input);
             //printf("%s\n", buf3);
             write(clientfd, buf3, strlen(buf3));
+            memset(input, 0, sizeof(input));
             read(clientfd, input  , MAXLINE);
             fputs(input, stdout);
             
