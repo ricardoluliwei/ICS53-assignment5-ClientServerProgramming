@@ -31,22 +31,19 @@ int check_date(char* date){
     buf = strtok(fdate, "-");
     if(!buf){return 0;}
     int year = atoi(buf);
-    printf("%d\n", year);
     buf = strtok(NULL, "-");
     if(!buf){return 0;}
     int month = atoi(buf);
-    printf("%d\n", month);
     buf = strtok(NULL, "-");
     if(!buf){return 0;}
     int day = atoi(buf);
-    printf("%d\n", day);
     if(year < 2017|| day <1||day>31||month<1||month>12) return 0; //general case
     switch (year) {
         case 2017:
             if(month <7) return 0;
             switch (month) {
                 case 7:
-                    if(day<2 || day>31) return 0;
+                    if(day<2 ||day>31) return 0;
                     break;
                 case 8:
                 case 10:

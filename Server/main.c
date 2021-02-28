@@ -42,15 +42,15 @@ void read_file(char* file1, char* file2){
     FILE* fd2 = fopen(file2, "r");
     char buf[1000];
 
-    if(fd1 < 0){
-        fprintf(STDERR_FILENO, "Can not open %s", file1);
-        exit(1);
-    }
+    // if(fd1 < 0){
+    //     fprintf(STDERR_FILENO, "Can not open %s", file1);
+    //     exit(1);
+    // }
 
-    if(fd2 < 0){
-        fprintf(STDERR_FILENO, "Can not open %s", file2);
-        exit(1);
-    } 
+    // if(fd2 < 0){
+    //     fprintf(STDERR_FILENO, "Can not open %s", file2);
+    //     exit(1);
+    // } 
 
     fgets(buf, 100, fd1);
     int i = 0;
@@ -63,8 +63,6 @@ void read_file(char* file1, char* file2){
         buf2 = strtok(NULL, ",");
         buf2 = strtok(NULL, ",");
         appl_stock.close[i] = atof(buf2);
-        printf("APPL Date: %s, Closing Price: %.2f\n", appl_stock.date[i], appl_stock.close[i]);
-        //printf("%s\n", buf);
         i++;
     }
     fgets(buf, 100, fd2);
@@ -78,8 +76,6 @@ void read_file(char* file1, char* file2){
         buf2 = strtok(NULL, ",");
         buf2 = strtok(NULL, ",");
         twtr_stock.close[i] = atof(buf2);
-        printf("TWTR Date: %s, Closing Price: %.2f\n", twtr_stock.date[i], twtr_stock.close[i]);
-        //printf("%s\n", buf);
         i++;
     }
     
@@ -177,10 +173,6 @@ int open_listenfd(char *port)
     return listenfd;
 }
 
-void doit(int connfd){
-    dup2(connfd, STDOUT_FILENO);
-    printf("Hello, World!\n");
-}
 
 void sendB(int connfd){
     size_t n;
@@ -248,7 +240,6 @@ int main(int argc, const char * argv[]) {
         connfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen); //line:netp:tiny:accept
         getnameinfo((struct sockaddr *) &clientaddr, clientlen, hostname, MAXLINE, port, MAXLINE, 0);
         printf("Accepted connection from (%s, %s)\n", hostname, port);
-        //doit(connfd);                                             //line:netp:tiny:doit
         sendB(connfd);
         close(connfd);                                            //line:netp:tiny:close
     }
