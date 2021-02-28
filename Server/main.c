@@ -212,10 +212,15 @@ void sendB(int connfd){
             }
         }
         size = strlen(output);
-        sprintf(output, "%d%s", size, output);
-        write(connfd, output, strlen(output) + 1);
+        for(i=size; i > 0; i--){
+            output[i] = output[i-1];
+        }
+        output[0] = size;
+
+        write(connfd, output, strlen(output));
         for(i =0 ; i< MAXLINE;i++){
             input[i] = '\0';
+            output[i] = '\0';
         }
     }
 }
