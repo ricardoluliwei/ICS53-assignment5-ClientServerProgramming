@@ -1,0 +1,1 @@
+gdb --args Server/main Server/AAPL.csv Server/TWTR.csv 30000

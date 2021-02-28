@@ -64,7 +64,6 @@ int clientfd = 0;
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    printf("Hello, World!\n");
     char *host, *port, input[MAXLINE], buf2[MAXLINE], *buffer;
     //rio_t rio;
     if (argc != 3) {

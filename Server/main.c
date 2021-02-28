@@ -194,13 +194,9 @@ void sendB(int connfd){
     char* spliter = " \n";
 
     while((n = read(connfd, input, MAXLINE)) != 0){
-        printf("%s", input);
+        printf("%s", &input[1]);
         
-        for(i =1; i< strlen(input); i++){
-            in_wo_sz[i-1] = input[i];
-        }
-        
-        buffer = strtok(in_wo_sz, spliter);
+        buffer = strtok(&input[1], spliter);
 
         if(strcmp(buffer, PRICES_STR)==0){
             stock = strtok(NULL, spliter);
