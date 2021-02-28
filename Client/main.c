@@ -1,9 +1,4 @@
-//
-//  main.c
-//  A5-Client-Local
-//
-//  Created by Tony on 2021/2/22.
-//
+//Qiwei He 47771452 and Liwei Lu 90101531
 
 #include <stdio.h>
 #include <sys/socket.h>
