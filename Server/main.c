@@ -186,12 +186,12 @@ void sendB(int connfd){
     size_t n;
     int i = 0;
     char input[MAXLINE];
-    char in_wo_sz[MAXLINE];
     float result;
     char* stock; 
     char* date;
     char* buffer;
     char* spliter = " \n";
+    char output[MAXLINE];
 
     while((n = read(connfd, input, MAXLINE)) != 0){
         printf("%s\n", &input[1]);
@@ -202,22 +202,23 @@ void sendB(int connfd){
             stock = strtok(NULL, spliter);
             date = strtok(NULL, spliter); 
             result = getPrice(stock, date);
-
+    
             if(result < 0){
-                fprintf(connfd, "%s\n", UNKNOWN_STR);
+                sprintf(output, "%s\n", UNKNOWN_STR);
             } else {
-                fprintf(connfd, "%.2f\n", result); 
+                sprintf(output, "%.2f\n", result); 
             }
         } else if(strcmp(buffer, MAXPROFIT_STR)==0){
             stock = strtok(NULL, spliter);
             result = maxProfit(stock);
 
             if(result < 0){
-                fprintf(connfd, "%s\n", UNKNOWN_STR);
+                sprintf(output, "%s\n", UNKNOWN_STR);
             } else {
-                fprintf(connfd, "Maximum Profit for %s: %.2f\n", stock, result); 
+                sprintf(output, "Maximum Profit for %s: %.2f\n", stock, result); 
             }
         }
+        write(connfd, output, strlen(output) + 1);
     }
 }
 
