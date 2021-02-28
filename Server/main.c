@@ -21,7 +21,7 @@
 #define MAXLINE  8192  /* Max text line length */
 #define MAXBUF   8192  /* Max I/O buffer size */
 #define LISTENQ  1024  /* Second argument to listen() */
-#define APPL_STR "APPL"
+#define APPL_STR "AAPL"
 #define TWTR_STR "TWTR"
 #define PRICES_STR "Prices"
 #define MAXPROFIT_STR "MaxProfit"
@@ -202,8 +202,8 @@ void sendB(int connfd){
             }
         } else if(strcmp(buffer, MAXPROFIT_STR)==0){
             stock = strtok(NULL, spliter);
+            stock[4] = '\0';
             result = maxProfit(stock);
-
             if(result < 0){
                 sprintf(output, "%s\n", UNKNOWN_STR);
             } else {

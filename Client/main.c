@@ -37,73 +37,33 @@ int check_date(char* date){
     buf = strtok(NULL, "-");
     if(!buf){return 0;}
     int day = atoi(buf);
-    if(year < 2017|| day <1||day>31||month<1||month>12) return 0; //general case
-    switch (year) {
-        case 2017:
-            if(month <7) return 0;
-            switch (month) {
-                case 7:
-                    if(day<2 ||day>31) return 0;
-                    break;
-                case 8:
-                case 10:
-                case 12:
-                    if(day >31) return 0;
-                    break;
-                case 9:
-                case 11:
-                    if(day >30) return 0;
-                    break;
-                default:
-                    return 0;
-            }
-            break;
-        case 2018:
-        case 2019:
-            switch (month) {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                case 8:
-                case 10:
-                case 12:
-                    if(day >31) return 0;
-                    break;
-                case 2:
+    if(year < 1000 || year > 9999|| day <1||day>31||month<1||month>12) return 0; //general case
+    switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                if(day >31) return 0;
+                break;
+            case 2:
+                if(year%4!=0){
                     if(day >28) return 0;
-                    break;
-                case 4:
-                case 6:
-                case 9:
-                case 11:
-                    if(day >30) return 0;
-                    break;
-                default:
-                    return 0;
-            }
-            break;
-        case 2020:
-            switch (month) {
-                case 1:
-                case 3:
-                case 5:
-                    if(day >31) return 0;
-                    break;
-                case 2:
+                }else{
                     if(day >29) return 0;
-                    break;
-                case 4:
-                case 6:
-                    if(day >30) return 0;
-                    break;
-                default:
+                }
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                if(day >30) return 0;
+                break;
+            default:
                     return 0;
             }
-            break;
-        default:
-            return 0;
-    }
     return 1;
 }
 
@@ -168,7 +128,7 @@ int main(int argc, const char * argv[]) {
         buffer = strtok(buf2, spliter);
         if(strcmp(buffer, "MaxProfit") == 0){
             buffer = strtok(NULL, spliter);
-            if(strcmp(buffer, "APPL") != 0 && strcmp(buffer, "TWTR")!=0){
+            if(strcmp(buffer, "AAPL") != 0 && strcmp(buffer, "TWTR")!=0){
                 printf("Invalid Syntax!\n");
                 continue;
             }
@@ -177,7 +137,7 @@ int main(int argc, const char * argv[]) {
             buf3[0] = original_length; // set first byte to size
             buf3[1] = '\0';
             strcat(buf3, input);
-            printf("%s\n", buf3);
+            //printf("%s\n", buf3);
             write(clientfd, buf3, strlen(buf3));
             read(clientfd, input  , MAXLINE);
             fputs(input, stdout);
@@ -185,7 +145,7 @@ int main(int argc, const char * argv[]) {
         }
         if(strcmp(buffer, "Prices") == 0){
             buffer = strtok(NULL, spliter);
-            if(strcmp(buffer, "APPL") != 0 && strcmp(buffer, "TWTR")!=0){
+            if(strcmp(buffer, "AAPL") != 0 && strcmp(buffer, "TWTR")!=0){
                 printf("Invalid Syntax!\n");
                 continue;
             }
@@ -200,7 +160,7 @@ int main(int argc, const char * argv[]) {
             buf3[0] = original_length; // set first byte to size
             buf3[1] = '\0';
             strcat(buf3, input);
-            printf("%s\n", buf3);
+            //printf("%s\n", buf3);
             write(clientfd, buf3, strlen(buf3));
             read(clientfd, input  , MAXLINE);
             fputs(input, stdout);

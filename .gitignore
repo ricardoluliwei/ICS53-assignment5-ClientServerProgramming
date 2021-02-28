@@ -1,2 +1,5 @@
 assignment5.pdf
 .vscode
+*.plist
+Client/main.dSYM/Contents/Resources/DWARF/main
+Server/main.dSYM/Contents/Resources/DWARF/main
