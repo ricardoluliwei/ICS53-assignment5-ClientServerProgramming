@@ -211,6 +211,9 @@ void sendB(int connfd){
             }
         }
         write(connfd, output, strlen(output) + 1);
+        for(i =0 ; i< MAXLINE;i++){
+            input[i] = '\0';
+        }
     }
 }
 
