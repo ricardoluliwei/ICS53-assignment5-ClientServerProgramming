@@ -177,6 +177,7 @@ int open_listenfd(char *port)
 void sendB(int connfd){
     size_t n;
     int i = 0;
+    int size;
     char input[MAXLINE];
     float result;
     char* stock; 
@@ -210,6 +211,8 @@ void sendB(int connfd){
                 sprintf(output, "Maximum Profit for %s: %.2f\n", stock, result); 
             }
         }
+        size = strlen(output);
+        sprintf(output, "%d%s", size, output);
         write(connfd, output, strlen(output) + 1);
         for(i =0 ; i< MAXLINE;i++){
             input[i] = '\0';
