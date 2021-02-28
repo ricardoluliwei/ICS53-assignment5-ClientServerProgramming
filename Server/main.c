@@ -239,7 +239,6 @@ int main(int argc, const char * argv[]) {
         clientlen = sizeof(clientaddr);
         connfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen); //line:netp:tiny:accept
         getnameinfo((struct sockaddr *) &clientaddr, clientlen, hostname, MAXLINE, port, MAXLINE, 0);
-        printf("Accepted connection from (%s, %s)\n", hostname, port);
         sendB(connfd);
         close(connfd);                                            //line:netp:tiny:close
     }
