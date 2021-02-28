@@ -141,7 +141,7 @@ int main(int argc, const char * argv[]) {
             write(clientfd, buf3, strlen(buf3));
             memset(input, 0, sizeof(input));
             read(clientfd, input  , MAXLINE);
-            fputs(input, stdout);
+            fputs(&input[1], stdout);
             continue;
         }
         if(strcmp(buffer, "Prices") == 0){
@@ -165,7 +165,7 @@ int main(int argc, const char * argv[]) {
             write(clientfd, buf3, strlen(buf3));
             memset(input, 0, sizeof(input));
             read(clientfd, input  , MAXLINE);
-            fputs(input, stdout);
+            fputs(&input[1], stdout);
             
             continue;
         }
